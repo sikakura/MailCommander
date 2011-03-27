@@ -17,16 +17,15 @@ import net.sf.json.*;
 import org.kohsuke.stapler.*;
 
 /**
- * TODO javadoc
+ * @author Naoto Shikakura
  */
 public class MailCommandPublisher extends Publisher {
 
-    private static final Logger LOGGER =
-        Logger.getLogger(MailCommandPublisher.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MailCommandPublisher.class.getName());
 
     @Override
-    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
-            BuildListener listener) throws InterruptedException, IOException {
+    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+        throws InterruptedException, IOException {
 
         File logfile = build.getLogFile();
         StringBuffer logbuf = new StringBuffer();
@@ -62,10 +61,9 @@ public class MailCommandPublisher extends Publisher {
 
             if (to_address != null) {
                 try {
-                    MimeMessage msg =
-                        new MimeMessage(Mailer.descriptor().createSession());
+                    MimeMessage msg = new MimeMessage(Mailer.descriptor().createSession());
                     msg.setRecipients(RecipientType.TO, to_address);
-                    msg.setFrom(new InternetAddress("admin@jenkins.com"));
+                    msg.setFrom(new InternetAddress(Mailer.descriptor().getAdminAddress()));
                     msg.setSubject("This is a result of mail command");
                     msg.setSentDate(new Date());
                     msg.setText(logbuf.toString());
@@ -84,31 +82,25 @@ public class MailCommandPublisher extends Publisher {
      * {@inheritDoc}
      */
     public BuildStepMonitor getRequiredMonitorService() {
-        // TODO Auto-generated method stub
         return BuildStepMonitor.NONE;
     }
 
     public static DescriptorImpl DESCRIPTOR;
 
     public static DescriptorImpl descriptor() {
-        return Hudson.getInstance().getDescriptorByType(
-            MailCommandPublisher.DescriptorImpl.class);
+        return Hudson.getInstance().getDescriptorByType(MailCommandPublisher.DescriptorImpl.class);
     }
 
     @Extension
-    public static final class DescriptorImpl extends
-            BuildStepDescriptor<Publisher> {
+    public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
         public DescriptorImpl() {
             load();
             DESCRIPTOR = this;
         }
 
-        /**
-         * This human readable name is used in the configuration screen.
-         */
         public String getDisplayName() {
-            return "Mail Commander";
+            return Messages.MailCommandPublisher_DisplayName();
         }
 
         @Override
@@ -117,9 +109,6 @@ public class MailCommandPublisher extends Publisher {
             return m;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {
             return true;

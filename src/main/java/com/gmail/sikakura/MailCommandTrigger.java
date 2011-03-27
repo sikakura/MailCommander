@@ -25,12 +25,11 @@ import org.kohsuke.stapler.*;
 import antlr.*;
 
 /**
- * TODO javadoc
+ * @author Naoto Shikakura
  */
 public class MailCommandTrigger extends Trigger<SCMedItem> {
 
-    private static final Logger LOGGER =
-        Logger.getLogger(MailCommandTrigger.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MailCommandTrigger.class.getName());
 
     @DataBoundConstructor
     public MailCommandTrigger(String spec) throws ANTLRException {
@@ -53,13 +52,11 @@ public class MailCommandTrigger extends Trigger<SCMedItem> {
         String address = null, port = null, username = null, password = null;
         boolean isCommandExist = false;
         try {
-            FileInputStream fis =
-                new FileInputStream(new File(job.getRootDir(), "config.xml"));
+            FileInputStream fis = new FileInputStream(new File(job.getRootDir(), "config.xml"));
             Document dom = new SAXReader().read(fis);
 
             Element mailcommander =
-                dom.getRootElement().element("builders").element(
-                    MailCommandBuilder.class.getName());
+                dom.getRootElement().element("builders").element(MailCommandBuilder.class.getName());
             address = mailcommander.elementText("address");
             port = mailcommander.elementText("port");
             username = mailcommander.elementText("username");
@@ -97,9 +94,7 @@ public class MailCommandTrigger extends Trigger<SCMedItem> {
 
             Message[] messages = null;
             if (inbox.getMessageCount() > 10)
-                messages =
-                    inbox.getMessages(inbox.getMessageCount() - 10 + 1, inbox
-                        .getMessageCount());
+                messages = inbox.getMessages(inbox.getMessageCount() - 10 + 1, inbox.getMessageCount());
             else
                 messages = inbox.getMessages();
             FetchProfile fp = new FetchProfile();
@@ -123,39 +118,28 @@ public class MailCommandTrigger extends Trigger<SCMedItem> {
             job.scheduleBuild(0, new MailCommandTriggerCause());
 
         try {
-            // to make sure that the log file contains up-to-date text,
-            // don't do buffering.
             StreamTaskListener listener = new StreamTaskListener(getLogFile());
 
             try {
                 PrintStream logger = listener.getLogger();
-                logger.println("Started on "
-                    + DateFormat.getDateTimeInstance().format(new Date()));
+                logger.println("Started on " + DateFormat.getDateTimeInstance().format(new Date()));
                 if (isCommandExist)
                     logger.println("Changes found");
                 else
                     logger.println("No changes");
             } catch (Error e) {
-                e.printStackTrace(listener
-                    .error("Failed to record Mail Commander polling"));
+                e.printStackTrace(listener.error("Failed to record Mail Commander polling"));
                 LOGGER.log(Level.SEVERE, "Failed to record SCM polling", e);
                 throw e;
             } catch (RuntimeException e) {
-                e.printStackTrace(listener
-                    .error("Failed to record Mail Commander polling"));
-                LOGGER.log(
-                    Level.SEVERE,
-                    "Failed to record Mail Commander polling",
-                    e);
+                e.printStackTrace(listener.error("Failed to record Mail Commander polling"));
+                LOGGER.log(Level.SEVERE, "Failed to record Mail Commander polling", e);
                 throw e;
             } finally {
                 listener.close();
             }
         } catch (IOException e) {
-            LOGGER.log(
-                Level.SEVERE,
-                "Failed to record Mail Commander polling",
-                e);
+            LOGGER.log(Level.SEVERE, "Failed to record Mail Commander polling", e);
         }
 
     }
@@ -167,7 +151,7 @@ public class MailCommandTrigger extends Trigger<SCMedItem> {
         }
 
         public String getDisplayName() {
-            return "Mail Commander Trigger";
+            return Messages.MailCommandTrigger_DisplayName();
         }
 
         // backward compatibility
@@ -235,8 +219,9 @@ public class MailCommandTrigger extends Trigger<SCMedItem> {
          * @since 1.350
          */
         public void writeLogTo(XMLOutput out) throws IOException {
-            new AnnotatedLargeText<MailCommandAction>(getLogFile(), Charset
-                .defaultCharset(), true, this).writeHtmlTo(0, out.asWriter());
+            new AnnotatedLargeText<MailCommandAction>(getLogFile(), Charset.defaultCharset(), true, this).writeHtmlTo(
+                0,
+                out.asWriter());
         }
     }
 

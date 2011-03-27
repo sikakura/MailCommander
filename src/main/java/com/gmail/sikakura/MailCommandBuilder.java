@@ -17,15 +17,6 @@ import javax.mail.internet.*;
 import org.kohsuke.stapler.*;
 
 /**
- * Sample {@link Builder}.
- * 
- * <p>
- * When the user configures the project and enables this builder,
- * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked and a new
- * {@link MailCommandBuilder} is created. The created instance is persisted to
- * the project configuration XML by using XStream, so this allows you to use
- * instance fields (like {@link #name}) to remember the configuration.
- * 
  * @author Naoto Shikakura
  */
 public class MailCommandBuilder extends Builder {
@@ -47,9 +38,6 @@ public class MailCommandBuilder extends Builder {
         this.password = password;
     }
 
-    /**
-     * We'll use this from the <tt>config.jelly</tt>.
-     */
     public String getAddress() {
         return address;
     }
@@ -217,37 +205,18 @@ public class MailCommandBuilder extends Builder {
             return false;
     }
 
-    // Overridden for better type safety.
-    // If your plugin doesn't really define any property on Descriptor,
-    // you don't have to do this.
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
     }
 
-    /**
-     * Descriptor for {@link MailCommandBuilder}. Used as a singleton. The class
-     * is marked as public so that it can be accessed from views.
-     * 
-     * <p>
-     * See
-     * <tt>src/main/resources/hudson/plugins/hello_world/HelloWorldBuilder/*.jelly</tt>
-     * for the actual HTML fragment for the configuration screen.
-     */
     @Extension
-    // This indicates to Jenkins that this is an implementation of an extension
-    // point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
-            // Indicates that this builder can be used with all kinds of project
-            // types
             return true;
         }
 
-        /**
-         * This human readable name is used in the configuration screen.
-         */
         public String getDisplayName() {
             return "Mail Commander";
         }
