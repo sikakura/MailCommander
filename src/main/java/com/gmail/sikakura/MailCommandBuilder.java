@@ -146,11 +146,6 @@ public class MailCommandBuilder extends Builder {
             return true;
         }
 
-        if (command.compareTo("groovy") == 0) {
-            command = command + " " + build.getRootDir() + "/groovy.script";
-            System.out.println(command);
-        }
-
         StringBuilder sb = new StringBuilder("-s");
         sb.append(" ");
         sb.append(Hudson.getInstance().getRootUrl());
@@ -184,6 +179,10 @@ public class MailCommandBuilder extends Builder {
             // execute the command
             // Arrays.asList is not serializable --- see 6835580
             args = new ArrayList<String>(args);
+            if (command.compareTo("groovy") == 0) {
+                File path = new File(build.getRootDir(), "groovy.script");
+                args.add(path.getAbsolutePath());
+            }
             resultInt = cli.execute(args, System.in, listener.getLogger(), listener.getLogger());
             cli.close();
         } catch (MalformedURLException e) {
