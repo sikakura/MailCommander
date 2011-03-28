@@ -13,6 +13,24 @@
   <name>Mail Commander Plugin for Jenkins-ci</name>
   <description>This plug-in provides function that read a mail subject as a CLI Command.</description>
   
+  <developers>
+    <developer>
+      <id>sikakura</id>
+      <name>Naoto Shikakura</name>
+      <email>sikakura@gmail.com</email>
+    </developer>
+  </developers>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <goals>deploy</goals>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
   <repositories>
